@@ -1,0 +1,42 @@
+
+{% extends 'formations/base.html' %}
+
+{% block titre %}Supprimer une formation - {{ nom_centre }}{% endblock %}
+
+{% block contenu %}
+<section class="form-page">
+    <div class="form-card suppression-card">
+
+        <div class="form-header">
+            <span class="form-label suppression-label">ZONE DE SUPPRESSION</span>
+            <h2>Confirmer la suppression</h2>
+            <p>
+                Vous êtes sur le point de supprimer définitivement une formation.
+            </p>
+        </div>
+
+        <div class="avertissement-suppression">
+            <p>
+                Voulez-vous vraiment supprimer la formation
+                <strong>{{ formation.nom }}</strong> ?
+            </p>
+            <p>Cette action est définitive et ne pourra pas être annulée.</p>
+        </div>
+
+        <form method="post" class="suppression-form">
+            {% csrf_token %}
+
+            <div class="form-actions">
+                <button type="submit" class="btn-supprimer">
+                    Oui, supprimer définitivement
+                </button>
+
+                <a href="{% url 'liste_formations' %}" class="btn-cancel">
+                    Non, annuler
+                </a>
+            </div>
+        </form>
+
+    </div>
+</section>
+{% endblock %}

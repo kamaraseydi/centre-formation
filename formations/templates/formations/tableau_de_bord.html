@@ -1,0 +1,136 @@
+
+{% extends 'formations/base.html' %}
+
+{% block titre %}Tableau de bord | Centre de Formation Seydi{% endblock %}
+
+{% block contenu %}
+
+<section class="tableau-bord">
+    <div class="tableau-bord-entete">
+        <p class="surtitre">ESPACE ADMINISTRATION</p>
+        <h2>Tableau de bord</h2>
+        <p>Vue d'ensemble de l'activité du centre de formation.</p>
+    </div>
+
+    <div class="statistiques-dashboard">
+
+        <article class="carte-statistique">
+            <span class="statistique-icone">📚</span>
+            <p>Total des formations</p>
+            <h3>{{ nombre_formations }}</h3>
+        </article>
+
+        <article class="carte-statistique">
+            <span class="statistique-icone">👨‍🎓</span>
+            <p>Total des étudiants</p>
+            <h3>{{ nombre_etudiants }}</h3>
+        </article>
+
+        <article class="carte-statistique attente">
+            <span class="statistique-icone">⏳</span>
+            <p>Inscriptions en attente</p>
+            <h3>{{ inscriptions_en_attente }}</h3>
+        </article>
+
+        <article class="carte-statistique validee">
+            <span class="statistique-icone">✅</span>
+            <p>Inscriptions validées</p>
+            <h3>{{ inscriptions_validees }}</h3>
+        </article>
+
+        <article class="carte-statistique annulee">
+            <span class="statistique-icone">❌</span>
+            <p>Inscriptions annulées</p>
+            <h3>{{ inscriptions_annulees }}</h3>
+        </article>
+
+    </div>
+
+    <div class="inscriptions-recentes">
+            <div class="inscriptions-recentes-entete">
+                <div>
+                    <p class="inscriptions-surtitre">SUIVI DES DEMANDES</p>
+                    <h3>Inscriptions récentes</h3>
+                    <p class="inscriptions-description">
+                        Les dernières demandes reçues par le centre.
+                    </p>
+                </div>
+
+            <a class="bouton-toutes-inscriptions"
+               href="{% url 'liste_inscriptions' %}">
+                Voir toutes les inscriptions
+                <span aria-hidden="true">→</span>
+            </a>
+         </div>
+
+        {% if inscriptions_recentes %}
+            <div class="liste-inscriptions">
+                {% for inscription in inscriptions_recentes %}
+                    <article class="ligne-inscription">
+
+                        <div class="inscription-etudiant">
+                            <div class="avatar-etudiant">
+                                {{ inscription.etudiant.prenom|first|upper }}{{ inscription.etudiant.nom|first|upper }}
+                            </div>
+
+                            <div class="inscription-identite">
+                                <strong>
+                                    {{ inscription.etudiant.prenom }}
+                                    {{ inscription.etudiant.nom }}
+                                </strong>
+                                <span>Étudiant</span>
+                            </div>
+                        </div>
+
+                        <div class="inscription-formation">
+                            <span class="inscription-label">FORMATION</span>
+                            <strong>{{ inscription.formation.nom }}</strong>
+                        </div>
+
+                        <div class="inscription-date">
+                            <span class="inscription-label">DATE DE DEMANDE</span>
+                            <strong>
+                                {{ inscription.date_inscription|date:"d/m/Y" }}
+                            </strong>
+                        </div>
+
+                        <div class="inscription-statut">
+                            <span class="badge-statut statut-{{ inscription.statut|lower }}">
+                                <span class="statut-point"></span>
+                                {{ inscription.get_statut_display }}
+                            </span>
+                        </div>
+
+                    </article>
+                {% endfor %}
+            </div>
+
+        {% else %}
+            <div class="inscriptions-vides">
+                <span class="inscriptions-vides-icone">📋</span>
+                <h4>Aucune inscription pour le moment</h4>
+                <p>Les nouvelles demandes apparaîtront ici.</p>
+            </div>
+        {% endif %}
+    </div>
+
+
+    <div class="dashboard-actions">
+        <h3>Accès rapide</h3>
+
+        <a href="{% url 'liste_inscriptions' %}">
+            Gérer les inscriptions →
+        </a>
+
+        <a href="{% url 'liste_etudiants' %}">
+            Consulter les étudiants →
+        </a>
+
+        <a href="{% url 'liste_formations' %}">
+            Consulter les formations →
+        </a>
+    </div>
+</section>
+
+
+{% endblock %}

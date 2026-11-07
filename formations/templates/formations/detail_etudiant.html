@@ -1,0 +1,118 @@
+
+{% extends 'formations/base.html' %}
+
+{% block titre %}Fiche étudiant - {{ etudiant.prenom }} {{ etudiant.nom }}{% endblock %}
+
+{% block contenu %}
+
+<section class="fiche-etudiant-page">
+
+    <header class="entete-fiche-etudiant">
+        <div>
+            <span class="form-label">GESTION SCOLAIRE</span>
+            <h1>Fiche de l'étudiant</h1>
+            <p>Consultez les informations personnelles et le parcours de formation.</p>
+        </div>
+
+        <a href="{% url 'liste_etudiants' %}" class="retour-etudiants">
+            ← Retour aux étudiants
+        </a>
+    </header>
+
+    <article class="profil-etudiant">
+        <div class="avatar-etudiant">
+            {{ etudiant.prenom|first|upper }}{{ etudiant.nom|first|upper }}
+        </div>
+
+        <div class="identite-etudiant">
+            <span class="profil-label">PROFIL ÉTUDIANT</span>
+            <h2>{{ etudiant.prenom }} {{ etudiant.nom }}</h2>
+            <p>{{ etudiant.email }}</p>
+        </div>
+    </article>
+
+    <section class="informations-etudiant">
+        <h2>Informations personnelles</h2>
+
+        <div class="informations-etudiant-grille">
+            <div class="information-etudiant">
+                <span>Nom</span>
+                <strong>{{ etudiant.nom }}</strong>
+            </div>
+
+            <div class="information-etudiant">
+                <span>Prénom</span>
+                <strong>{{ etudiant.prenom }}</strong>
+            </div>
+
+            <div class="information-etudiant">
+                <span>Adresse e-mail</span>
+                <strong class="valeur-email">{{ etudiant.email }}</strong>
+            </div>
+
+            <div class="information-etudiant">
+                <span>Téléphone</span>
+                <strong>{{ etudiant.telephone|default:"Non renseigné" }}</strong>
+            </div>
+        </div>
+    </section>
+
+    <section class="inscriptions-etudiant">
+        <div class="entete-inscriptions">
+            <div>
+                <h2>Ses inscriptions</h2>
+                <p>Récapitulatif des formations de cet étudiant.</p>
+            </div>
+
+            <span class="nombre-inscriptions">
+                {{ inscriptions|length }}
+                inscription{{ inscriptions|length|pluralize }}
+            </span>
+        </div>
+
+        <div class="cartes-inscriptions">
+            {% for inscription in inscriptions %}
+                <article class="carte-inscription">
+                    <div class="inscription-icone">
+                        {{ forloop.counter }}
+                    </div>
+
+                    <div class="inscription-details">
+                        <h3>{{ inscription.formation.nom }}</h3>
+
+                        <p>
+                            <span>Date d'inscription :</span>
+                            {{ inscription.date_inscription|date:"d/m/Y" }}
+                        </p>
+
+                        <p>
+                            <span>Statut :</span>
+
+                            {% if inscription.statut == 'VALIDEE' %}
+                                <span class="statut-inscription statut-validee">
+                                    {{ inscription.get_statut_display }}
+                                </span>
+                            {% elif inscription.statut == 'ANNULEE' %}
+                                <span class="statut-inscription statut-annulee">
+                                    {{ inscription.get_statut_display }}
+                                </span>
+                            {% else %}
+                                <span class="statut-inscription statut-attente">
+                                    {{ inscription.get_statut_display }}
+                                </span>
+                            {% endif %}
+                        </p>
+                    </div>
+                </article>
+            {% empty %}
+                <div class="inscriptions-vides">
+                    <h3>Aucune inscription</h3>
+                    <p>Cet étudiant n'est inscrit à aucune formation pour le moment.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+
+</section>
+
+{% endblock %}

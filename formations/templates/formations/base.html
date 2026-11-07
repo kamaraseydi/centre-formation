@@ -1,0 +1,114 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block titre %}{{ nom_centre }}{% endblock %}</title>
+
+    <link rel="stylesheet" href="{% static 'formations/style.css' %}">
+
+</head>
+<body>
+
+<header class="site-header">
+    <div class="header-inner">
+
+        <a href="{% url 'accueil' %}" class="site-brand">
+            <span class="brand-logo">CS</span>
+            <span class="brand-name">{{ nom_centre }}</span>
+        </a>
+
+        <nav class="navbar">
+
+            <a href="{% url 'accueil' %}">Accueil</a>
+            <a href="{% url 'liste_formations' %}">Formations</a>
+
+            {% if perms.formations.add_formation %}
+                <a href="{% url 'ajouter_formation' %}">
+                    Ajouter une formation
+                </a>
+            {% endif %}
+
+            {% if perms.formations.view_etudiant %}
+                <a href="{% url 'liste_etudiants' %}">
+                    Étudiants
+                </a>
+            {% endif %}
+
+            {% if perms.formations.view_inscription %}
+                <a href="{% url 'liste_inscriptions' %}">
+                    Inscriptions
+                </a>
+            {% endif %}
+
+            {% if perms.formations.view_inscription %}
+                <a href="{% url 'tableau_de_bord' %}">
+                    Tableau de bord
+                </a>
+            {% endif %}
+
+            <div class="navbar-user">
+                {% if user.is_authenticated %}
+
+                    {% if user.profil_etudiant %}
+                        <a href="{% url 'mon_profil' %}" class="navbar-profile">
+                            Mon profil
+                        </a>
+                    {% endif %}
+
+                    <span class="navbar-welcome">
+                        Bonjour, {{ user.username }}
+                    </span>
+
+                    <form method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="navbar-logout">
+                            Déconnexion
+                        </button>
+                    </form>
+
+                {% else %}
+
+                    <a href="{% url 'login' %}" class="navbar-login">
+                        Connexion
+                    </a>
+
+                    <a href="{% url 'inscription_etudiant' %}" class="navbar-register">
+                        Créer un compte
+                    </a>
+
+                {% endif %}
+            </div>
+
+        </nav>
+    </div>
+</header>
+
+<main>
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% block contenu %}
+    {% endblock %}
+</main>
+
+<footer>
+    <div class="footer-content">
+        <h3>{{ nom_centre }}</h3>
+        <p>Apprendre · Progresser · Réussir</p>
+        <p>© {% now "Y" %} {{ nom_centre }}. Tous droits réservés.</p>
+    </div>
+</footer>
+
+</body>
+</html>

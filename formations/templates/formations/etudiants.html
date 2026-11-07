@@ -1,0 +1,93 @@
+
+{% extends 'formations/base.html' %}
+
+{% block titre %}Liste des étudiants - {{ nom_centre }}{% endblock %}
+
+{% block contenu %}
+
+<section class="etudiants-page">
+
+    <header class="entete-etudiants">
+        <div>
+            <span class="form-label">GESTION SCOLAIRE</span>
+            <h1>Liste des étudiants</h1>
+            <p>Consultez les informations des étudiants et leurs formations.</p>
+        </div>
+
+        <div class="compteur-etudiants">
+            <span>Étudiants enregistrés</span>
+            <strong>{{ etudiants|length }}</strong>
+        </div>
+    </header>
+
+    {% if etudiants %}
+        <div class="tableau-etudiants-conteneur">
+            <table class="tableau-etudiants">
+                <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Prénom</th>
+                        <th>Email</th>
+                        <th>Téléphone</th>
+                        <th>Inscriptions</th>
+                        <th>Formations suivies</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for etudiant in etudiants %}
+                        <tr>
+                            <td>
+                                <a
+                                    class="lien-etudiant"
+                                    href="{% url 'detail_etudiant' etudiant.id %}"
+                                >
+                                    {{ etudiant.nom }}
+                                </a>
+                            </td>
+
+                            <td>{{ etudiant.prenom }}</td>
+
+                            <td class="email-etudiant">
+                                {{ etudiant.email }}
+                            </td>
+
+                            <td>
+                                {{ etudiant.telephone|default:"Non renseigné" }}
+                            </td>
+
+                            <td>
+                                <span class="badge-inscriptions">
+                                    {{ etudiant.inscriptions.count }}
+                                </span>
+                            </td>
+
+                            <td>
+                                <div class="formations-etudiant">
+                                    {% for inscription in etudiant.inscriptions.all %}
+                                        <span class="badge-formation">
+                                            {{ inscription.formation.nom }}
+                                        </span>
+                                    {% empty %}
+                                        <span class="sans-formation">
+                                            Aucune formation
+                                        </span>
+                                    {% endfor %}
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    {% else %}
+        <div class="etudiants-vides">
+            <h2>Aucun étudiant pour le moment</h2>
+            <p>Les étudiants enregistrés apparaîtront ici.</p>
+        </div>
+    {% endif %}
+
+</section>
+
+{% endblock %}

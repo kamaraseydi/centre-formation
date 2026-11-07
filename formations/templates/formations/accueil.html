@@ -1,0 +1,173 @@
+
+{% extends 'formations/base.html' %}
+
+{% block titre %}Accueil - {{ nom_centre }}{% endblock %}
+
+{% block contenu %}
+
+<!-- SECTION HERO -->
+<section class="hero">
+    <div class="hero-contenu">
+        <p class="surtitre">{{ nom_centre }}</p>
+
+        <h2>Construisez votre avenir grâce à la formation</h2>
+
+        <p class="hero-description">
+            Développez vos compétences, découvrez de nouvelles opportunités
+            et préparez-vous aux métiers de demain avec notre centre de formation.
+        </p>
+
+        <a href="{% url 'liste_formations' %}" class="bouton-principal">
+            Découvrir nos formations →
+        </a>
+    </div>
+</section>
+
+
+<!-- PRÉSENTATION ET STATISTIQUES -->
+<section class="presentation">
+    <p class="surtitre">QUI SOMMES-NOUS ?</p>
+
+    <h2>Bienvenue au {{ nom_centre }}</h2>
+
+    <p>
+        Depuis {{ annee_creation }}, nous accompagnons les apprenants
+        dans le développement de leurs compétences et leur progression
+        professionnelle.
+    </p>
+
+    <p>
+        Notre objectif est de proposer un environnement d'apprentissage
+        accessible, structuré et adapté aux besoins de chacun.
+    </p>
+
+    <div class="statistiques">
+
+        <div class="statistique">
+            <span class="statistique-nombre">{{ nombre_formations }}</span>
+            <span class="statistique-label">Formations proposées</span>
+        </div>
+
+        <div class="statistique">
+            <span class="statistique-nombre">{{ annee_creation }}</span>
+            <span class="statistique-label">Année de création</span>
+        </div>
+
+    </div>
+
+    {% if inscriptions_ouvertes %}
+        <p class="message-inscription ouvert">
+            Les inscriptions sont ouvertes !
+        </p>
+    {% else %}
+        <p class="message-inscription ferme">
+            Les inscriptions sont actuellement fermées.
+        </p>
+    {% endif %}
+</section>
+
+
+<!-- DOMAINES D'APPRENTISSAGE -->
+<section class="domaines">
+    <div class="section-introduction">
+        <p class="surtitre">APPRENEZ ET ÉVOLUEZ</p>
+        <h2>Développez des compétences pour demain</h2>
+        <p>
+            Découvrez des possibilités d'apprentissage qui vous permettent
+            d'enrichir vos connaissances et de progresser.
+        </p>
+    </div>
+
+    <div class="grille-domaines">
+
+        <article class="carte-domaine">
+            <div class="domaine-icone">💻</div>
+            <h3>Compétences numériques</h3>
+            <p>
+                Développez votre maîtrise des outils numériques et
+                découvrez les opportunités offertes par la technologie.
+            </p>
+        </article>
+
+        <article class="carte-domaine">
+            <div class="domaine-icone">📚</div>
+            <h3>Formation et apprentissage</h3>
+            <p>
+                Renforcez vos connaissances grâce à un parcours
+                d'apprentissage organisé et progressif.
+            </p>
+        </article>
+
+        <article class="carte-domaine">
+            <div class="domaine-icone">🎯</div>
+            <h3>Développement professionnel</h3>
+            <p>
+                Préparez-vous à relever de nouveaux défis et à saisir
+                de nouvelles opportunités professionnelles.
+            </p>
+        </article>
+
+    </div>
+</section>
+
+
+<!-- POURQUOI NOUS CHOISIR -->
+<section class="objectifs">
+    <div class="section-introduction">
+        <p class="surtitre">NOTRE ENGAGEMENT</p>
+        <h2>Pourquoi choisir notre centre ?</h2>
+        <p>
+            Nous mettons l'accent sur la qualité de l'apprentissage
+            et l'accompagnement des apprenants.
+        </p>
+    </div>
+
+    <div class="grille-objectifs">
+
+        <article class="carte-objectif">
+            <h3>Un suivi des étudiants</h3>
+            <p>
+                Assurer un meilleur suivi des apprenants et de leur parcours
+                au sein du centre.
+            </p>
+        </article>
+
+        <article class="carte-objectif">
+            <h3>Des formations structurées</h3>
+            <p>
+                Proposer des formations organisées et adaptées aux besoins
+                des apprenants.
+            </p>
+        </article>
+
+        <article class="carte-objectif">
+            <h3>Un accompagnement continu</h3>
+            <p>
+                Faciliter l'accès aux formations et accompagner les étudiants
+                dans leur progression.
+            </p>
+        </article>
+
+    </div>
+</section>
+
+
+<!-- APPEL À L'ACTION -->
+<section class="appel-action">
+    <div>
+        <p class="surtitre">VOTRE AVENIR COMMENCE ICI</p>
+
+        <h2>Prêt à développer vos compétences ?</h2>
+
+        <p>
+            Consultez nos formations et trouvez le parcours qui correspond
+            à vos objectifs.
+        </p>
+
+        <a href="{% url 'liste_formations' %}" class="bouton-principal">
+            Explorer les formations →
+        </a>
+    </div>
+</section>
+
+{% endblock %}

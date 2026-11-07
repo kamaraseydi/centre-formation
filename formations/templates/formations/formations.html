@@ -1,0 +1,122 @@
+
+{% extends 'formations/base.html' %}
+
+{% block titre %}Nos formations - {{ nom_centre }}{% endblock %}
+
+{% block contenu %}
+
+<section class="liste-formations-page">
+
+    <header class="entete-formations">
+        <span class="form-label">NOTRE CATALOGUE</span>
+        <h2>Nos formations</h2>
+        <p>Découvrez les formations proposées par notre centre.</p>
+    </header>
+
+    <form method="get" class="filtres-formations">
+        <input
+            type="text"
+            name="q"
+            placeholder="Rechercher une formation..."
+            value="{{ recherche }}"
+        >
+
+        <label>
+            <input
+                type="checkbox"
+                name="disponibles"
+                value="oui"
+                {% if disponibles_seulement %}checked{% endif %}
+            >
+            Formations disponibles uniquement
+        </label>
+
+        <button type="submit">Rechercher</button>
+
+        {% if recherche or disponibles_seulement %}
+            <a href="{% url 'liste_formations' %}">Réinitialiser</a>
+        {% endif %}
+    </form>
+
+    <div class="grille-formations">
+        {% for formation in formations %}
+            <article class="carte-formation">
+
+                {% if formation.image %}
+                    <img
+                        src="{{ formation.image.url }}"
+                        alt="Image de la formation {{ formation.nom }}"
+                        class="image-formation"
+                        loading="lazy"
+                    >
+                {% endif %}
+
+                <div class="carte-contenu">
+                    <h3>{{ formation.nom }}</h3>
+
+                    <p class="description-formation">
+                        {{ formation.description }}
+                    </p>
+
+                    <p>
+                        <strong>Durée :</strong>
+                        {{ formation.duree_semaines }} semaines
+                    </p>
+
+                    <p class="prix-formation">
+                        {{ formation.prix|floatformat:"-2" }} FCFA
+                    </p>
+
+                    {% if formation.disponible %}
+                        <span class="statut disponible">Disponible</span>
+                    {% else %}
+                        <span class="statut indisponible">Indisponible</span>
+                    {% endif %}
+                </div>
+
+                {% if formation.disponible %}
+                    <form
+                        method="post"
+                        action="{% url 'inscrire_formation' formation.id %}"
+                        class="form-inscription-carte"
+                    >
+                        {% csrf_token %}
+                        <button type="submit" class="bouton-inscription">
+                            S'inscrire
+                        </button>
+                    </form>
+                {% else %}
+                    <div class="message-inscriptions-ferme">
+                        <span class="statut indisponible">
+                            Inscriptions fermées
+                        </span>
+                    </div>
+                {% endif %}
+
+                {% if perms.formations.change_formation or perms.formations.delete_formation %}
+                    <div class="actions-formation">
+                        {% if perms.formations.change_formation %}
+                            <a href="{% url 'modifier_formation' formation.id %}">
+                                Modifier
+                            </a>
+                        {% endif %}
+
+                        {% if perms.formations.delete_formation %}
+                            <a href="{% url 'supprimer_formation' formation.id %}">
+                                Supprimer
+                            </a>
+                        {% endif %}
+                    </div>
+                {% endif %}
+
+            </article>
+        {% empty %}
+            <p class="aucune-formation">
+                Aucune formation ne correspond à votre recherche.
+            </p>
+        {% endfor %}
+    </div>
+
+</section>
+
+{% endblock %}

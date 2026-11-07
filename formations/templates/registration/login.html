@@ -1,0 +1,69 @@
+{% extends 'formations/base.html' %}
+
+{% block titre %} Connexion - {{ nom_centre }} {% endblock %}
+
+    {% block contenu %}
+        <section class="connexion-section">
+            <div class="connexion-carte">
+
+                <h2>Connexion</h2>
+
+                <p class="connexion-description">
+                    Connectez-vous pour accéder à votre espace de gestion.
+                </p>
+
+                {% if form.errors %}
+                    <p class="erreur-connexion">
+                        Identifiant ou mot de passe incorrect.
+                    </p>
+                {% endif %}
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="champ-connexion">
+                        <label for="id_username">Nom d'utilisateur</label>
+                        <input
+                            type="text"
+                            name="username"
+                            id="id_username"
+                            autocomplete="username"
+                            required
+                            autofocus
+                        >
+                    </div>
+
+                    <div class="champ-connexion">
+                        <label for="id_password">Mot de passe</label>
+                        <input
+                            type="password"
+                            name="password"
+                            id="id_password"
+                            autocomplete="current-password"
+                            required
+                        >
+                    </div>
+
+                    <input type="hidden" name="next" value="{{ next }}">
+
+                    <button type="submit" class="bouton-connexion">
+                        Se connecter
+                    </button>
+                </form>
+
+
+                <p>
+                    Pas encore de compte ?
+                    <a href="{% url 'inscription_etudiant' %}">
+                        Créer un compte étudiant
+                    </a>
+                </p>
+
+                <a href="{% url 'accueil' %}" class="retour-accueil">
+                    Retour à l'accueil
+                </a>
+
+            </div>
+        </section>
+
+    {% endblock %}

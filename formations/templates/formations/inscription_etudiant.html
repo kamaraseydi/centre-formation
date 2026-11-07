@@ -1,0 +1,61 @@
+
+{% extends 'formations/base.html' %}
+
+{% block titre %}Créer un compte étudiant - {{ nom_centre }}{% endblock %}
+
+{% block contenu %}
+
+<section class="connexion-section">
+    <div class="connexion-carte">
+
+        <h2>Créer un compte étudiant</h2>
+
+        <p class="connexion-description">
+            Remplissez ce formulaire pour accéder à votre espace étudiant.
+        </p>
+
+        <form method="post">
+            {% csrf_token %}
+
+            {% if formulaire.non_field_errors %}
+                <div class="erreur-connexion">
+                    {{ formulaire.non_field_errors }}
+                </div>
+            {% endif %}
+
+            {% for champ in formulaire %}
+                <div class="champ-connexion">
+                    <label for="{{ champ.id_for_label }}">
+                        {{ champ.label }}
+                    </label>
+
+                    {{ champ }}
+
+                    {% for erreur in champ.errors %}
+                        <p class="erreur-connexion">{{ erreur }}</p>
+                    {% endfor %}
+
+                    {% if champ.help_text %}
+                        <small>{{ champ.help_text|safe }}</small>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            <button type="submit" class="bouton-connexion">
+                Créer mon compte
+            </button>
+        </form>
+
+        <p>
+            Vous avez déjà un compte ?
+            <a href="{% url 'login' %}">Se connecter</a>
+        </p>
+
+        <a href="{% url 'accueil' %}" class="retour-accueil">
+            Retour à l'accueil
+        </a>
+
+    </div>
+</section>
+
+{% endblock %}

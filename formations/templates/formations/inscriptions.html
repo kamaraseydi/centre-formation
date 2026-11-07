@@ -1,0 +1,175 @@
+{% extends 'formations/base.html' %}
+
+{% block titre %}Gestion des inscriptions - {{ nom_centre }}{% endblock %}
+
+{% block contenu %}
+<section class="section-inscriptions">
+
+    <div class="entete-inscriptions">
+        <div>
+            <h2>Gestion des inscriptions</h2>
+            <p>Consultez les demandes et gérez leur statut.</p>
+        </div>
+
+        <span class="nombre-inscriptions">
+            {{ page_obj.paginator.count }} inscription(s)
+        </span>
+    </div>
+
+    <!-- Recherche et filtre -->
+    <form method="get" class="filtres-inscriptions">
+
+        <div class="champ-recherche-inscription">
+            <label for="q">Rechercher un étudiant</label>
+            <input
+                type="text"
+                id="q"
+                name="q"
+                value="{{ recherche }}"
+                placeholder="Nom, prénom ou e-mail..."
+            >
+        </div>
+
+        <div class="champ-statut-inscription">
+            <label for="statut">Filtrer par statut</label>
+            <select id="statut" name="statut">
+                <option value="">Tous les statuts</option>
+                <option value="EN_ATTENTE"
+                    {% if statut_selectionne == 'EN_ATTENTE' %}selected{% endif %}>
+                    En attente
+                </option>
+                <option value="VALIDEE"
+                    {% if statut_selectionne == 'VALIDEE' %}selected{% endif %}>
+                    Validée
+                </option>
+                <option value="ANNULEE"
+                    {% if statut_selectionne == 'ANNULEE' %}selected{% endif %}>
+                    Annulée
+                </option>
+            </select>
+        </div>
+
+        <div class="actions-filtres-inscriptions">
+            <button type="submit">Rechercher</button>
+            <a href="{% url 'liste_inscriptions' %}"
+               class="bouton-reinitialiser">
+                Réinitialiser
+            </a>
+        </div>
+
+    </form>
+
+    <!-- Liste des inscriptions -->
+    <div class="liste-cartes-inscriptions">
+
+        {% for inscription in inscriptions %}
+            <article class="carte-inscription">
+
+                <div class="inscription-identite">
+                    <div class="avatar-inscription">
+                        {{ inscription.etudiant.prenom|first|upper }}{{ inscription.etudiant.nom|first|upper }}
+                    </div>
+
+                    <div class="inscription-identite-texte">
+                        <h3>
+                            {{ inscription.etudiant.prenom }}
+                            {{ inscription.etudiant.nom }}
+                        </h3>
+                        <p>{{ inscription.etudiant.email }}</p>
+                    </div>
+                </div>
+
+                <div class="inscription-details">
+                    <div>
+                        <span class="libelle-inscription">Formation</span>
+                        <strong>{{ inscription.formation.nom }}</strong>
+                    </div>
+
+                    <div>
+                        <span class="libelle-inscription">Date d'inscription</span>
+                        <strong>{{ inscription.date_inscription|date:"d/m/Y" }}</strong>
+                    </div>
+
+                    <div>
+                        <span class="libelle-inscription">Statut</span>
+                        <span class="badge-statut badge-{{ inscription.statut|lower }}">
+                            {{ inscription.get_statut_display }}
+                        </span>
+                    </div>
+                </div>
+
+                {% if inscription.statut == 'EN_ATTENTE' %}
+                    <div class="actions-inscription">
+
+                        <form method="post"
+                              action="{% url 'valider_inscription' inscription.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="bouton-valider-inscription">
+                                Valider
+                            </button>
+                        </form>
+
+                        <form method="post"
+                              action="{% url 'annuler_inscription' inscription.id %}"
+                              onsubmit="return confirm('Voulez-vous vraiment annuler cette inscription ?');">
+
+                            {% csrf_token %}
+
+                            <button type="submit" class="bouton-annuler-inscription">
+                                Annuler
+                            </button>
+
+                        </form>
+
+                    </div>
+                {% endif %}
+
+            </article>
+
+        {% empty %}
+            <div class="aucune-inscription">
+                <h3>Aucune inscription trouvée</h3>
+                <p>
+                    Aucune inscription ne correspond à ta recherche
+                    ou au statut sélectionné.
+                </p>
+                <a href="{% url 'liste_inscriptions' %}"
+                   class="bouton-reinitialiser">
+                    Afficher toutes les inscriptions
+                </a>
+            </div>
+        {% endfor %}
+
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+        <nav class="pagination-inscriptions" aria-label="Pagination">
+
+            {% if page_obj.has_previous %}
+                <a href="?q={{ recherche|urlencode }}&statut={{ statut_selectionne|urlencode }}&page={{ page_obj.previous_page_number }}"
+                   class="lien-pagination">
+                    &laquo; Précédent
+                </a>
+            {% else %}
+                <span class="lien-pagination desactive">&laquo; Précédent</span>
+            {% endif %}
+
+            <span class="pagination-infos">
+                Page {{ page_obj.number }} sur {{ page_obj.paginator.num_pages }}
+            </span>
+
+            {% if page_obj.has_next %}
+                <a href="?q={{ recherche|urlencode }}&statut={{ statut_selectionne|urlencode }}&page={{ page_obj.next_page_number }}"
+                   class="lien-pagination">
+                    Suivant &raquo;
+                </a>
+            {% else %}
+                <span class="lien-pagination desactive">Suivant &raquo;</span>
+            {% endif %}
+
+        </nav>
+    {% endif %}
+
+</section>
+{% endblock %}

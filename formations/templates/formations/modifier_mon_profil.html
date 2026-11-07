@@ -1,0 +1,76 @@
+
+{% extends 'formations/base.html' %}
+
+{% block contenu %}
+
+<div class="profil-page">
+
+    <section class="profil-entete">
+        <div>
+            <span class="profil-surtitre">ESPACE PERSONNEL</span>
+            <h2>Modifier mon profil</h2>
+            <p>
+                Mettez à jour vos informations personnelles.
+            </p>
+        </div>
+    </section>
+
+    <section class="profil-carte profil-formulaire-carte">
+
+        <div class="profil-identite">
+            <div class="profil-avatar">
+                {{ etudiant.prenom|first|upper }}{{ etudiant.nom|first|upper }}
+            </div>
+
+            <div class="profil-nom">
+                <h3>Mes informations personnelles</h3>
+                <p>Modifiez les informations ci-dessous.</p>
+            </div>
+        </div>
+
+        <div class="profil-separateur"></div>
+
+        <form method="post">
+            {% csrf_token %}
+
+            {% if formulaire.non_field_errors %}
+                <div class="profil-erreurs">
+                    {{ formulaire.non_field_errors }}
+                </div>
+            {% endif %}
+
+            {% for champ in formulaire %}
+                <div class="profil-champ">
+                    <label for="{{ champ.id_for_label }}">
+                        {{ champ.label }}
+                    </label>
+
+                    {{ champ }}
+
+                    {% if champ.help_text %}
+                        <small>{{ champ.help_text }}</small>
+                    {% endif %}
+
+                    {% for erreur in champ.errors %}
+                        <p class="profil-erreur">{{ erreur }}</p>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+
+            <div class="profil-actions">
+                <button type="submit" class="profil-bouton-principal">
+                    Enregistrer les modifications
+                </button>
+
+                <a href="{% url 'mon_profil' %}"
+                   class="profil-bouton-secondaire">
+                    Annuler
+                </a>
+            </div>
+        </form>
+
+    </section>
+
+</div>
+
+{% endblock %}
