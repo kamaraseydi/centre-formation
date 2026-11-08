@@ -300,57 +300,6 @@ def changer_mot_de_passe(request):
         contexte
     )
 
-
-@login_required
-@require_POST
-def inscrire_formation(request, id):
-    formation = get_object_or_404(Formation, id=id)
-
-    # Vérifier que la formation est disponible
-    if not formation.disponible:
-        messages.error(
-            request,
-            "Les inscriptions à cette formation sont fermées."
-        )
-        return redirect('liste_formations')
-
-    # Vérifier que le compte possède une fiche étudiant
-    try:
-        etudiant = request.user.profil_etudiant
-    except Etudiant.DoesNotExist:
-        messages.error(
-            request,
-            "Aucune fiche étudiant n'est associée à votre compte."
-        )
-        return redirect('liste_formations')
-
-    # Empêcher les inscriptions en double
-    inscription_existante = Inscription.objects.filter(
-        etudiant=etudiant,
-        formation=formation
-    ).exists()
-
-    if inscription_existante:
-        messages.warning(
-            request,
-            "Vous êtes déjà inscrit à cette formation."
-        )
-        return redirect('mon_profil')
-
-    # Créer l'inscription
-    Inscription.objects.create(
-        etudiant=etudiant,
-        formation=formation,
-        statut='EN_ATTENTE'
-    )
-
-    messages.success(
-        request,
-        f"Votre demande d'inscription à {formation.nom} a été enregistrée."
-    )
-
-    return redirect('mon_profil')
-
 @login_required
 def redirection_apres_connexion(request):
     try:
