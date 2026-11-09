@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'storages',
     'formations.apps.FormationsConfig',
 ]
 
@@ -79,6 +80,8 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.1/ref/settings/#databases
 
+
+# Database
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -86,9 +89,13 @@ DATABASES = {
         'USER': os.getenv('DB_USER'),
         'PASSWORD': os.getenv('DB_PASSWORD'),
         'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT'),
+        'PORT': os.getenv('DB_PORT', '5432'),
+        'OPTIONS': {
+            'sslmode': os.getenv('DB_SSLMODE', 'prefer'),
+        },
     }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/6.1/ref/settings/#auth-password-validators
@@ -141,3 +148,44 @@ LOGIN_REDIRECT_URL = 'redirection_apres_connexion'
 LOGOUT_REDIRECT_URL = 'accueil'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+
+
+# Configuration du stockage des fichiers
+
+SUPABASE_STORAGE_ENABLED = (
+    os.getenv('SUPABASE_STORAGE_ENABLED', 'False').lower() == 'true'
+)
+
+if SUPABASE_STORAGE_ENABLED:
+    STORAGES = {
+        'default': {
+            'BACKEND': 'storages.backends.s3.S3Storage',
+            'OPTIONS': {
+                'access_key': os.getenv('AWS_ACCESS_KEY_ID'),
+                'secret_key': os.getenv('AWS_SECRET_ACCESS_KEY'),
+                'bucket_name': os.getenv('AWS_STORAGE_BUCKET_NAME'),
+                'endpoint_url': os.getenv('AWS_S3_ENDPOINT_URL'),
+                'region_name': os.getenv('AWS_S3_REGION_NAME'),
+                'default_acl': None,
+                'querystring_auth': False,
+                'file_overwrite': False,
+                'location': 'media',
+                'object_parameters': {
+                    'CacheControl': 'max-age=86400',
+                },
+            },
+        },
+        'staticfiles': {
+            'BACKEND': 'django.contrib.staticfiles.storage.StaticFilesStorage',
+        },
+    }
+else:
+    STORAGES = {
+        'default': {
+            'BACKEND': 'django.core.files.storage.FileSystemStorage',
+        },
+        'staticfiles': {
+            'BACKEND': 'django.contrib.staticfiles.storage.StaticFilesStorage',
+        },
+    }
