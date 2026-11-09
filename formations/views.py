@@ -1,22 +1,25 @@
 
-from django.http import HttpResponse
-from django.contrib.auth.decorators import permission_required
 from django.shortcuts import render, redirect, get_object_or_404
-from django.shortcuts import render, redirect
-from django.views.decorators.http import require_POST
-from django.db.models import Count
-from django.core.paginator import Paginator
-from . import models
-from .models import Formation, Etudiant, Inscription
-from django.db import transaction
-from django.contrib.auth import login
-from .forms import FormationForm, InscriptionEtudiantForm, EtudiantProfilForm
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.db.models import Q
+from django.contrib.auth import login, update_session_auth_hash
+from django.contrib.auth.decorators import (
+    login_required,
+    permission_required,
+)
 from django.contrib.auth.forms import PasswordChangeForm
-from django.contrib.auth import update_session_auth_hash
-from django.db import IntegrityError
+from django.core.paginator import Paginator
+from django.db import transaction, IntegrityError
+from django.db.models import Q
+from django.views.decorators.http import require_POST
+
+from .models import Formation, Etudiant, Inscription
+from .forms import (
+    FormationForm,
+    InscriptionEtudiantForm,
+    EtudiantProfilForm,
+)
+
+
 # Create your views here.
 
 def accueil(request):
