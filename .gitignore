@@ -24,3 +24,6 @@ media/
 # Système
 .DS_Store
 Thumbs.db
+
+# Fichiers statiques générés par Django
+staticfiles/
